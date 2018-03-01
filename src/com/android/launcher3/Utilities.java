@@ -131,6 +131,16 @@ public final class Utilities {
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    public static final String DESKTOP_SHOW_LABEL = "pref_desktop_show_label";
+    public static final String ALLAPPS_SHOW_LABEL = "pref_allapps_show_label";
+
+    public static boolean showDesktopLabel(Context context) {
+        return getPrefs(context).getBoolean(DESKTOP_SHOW_LABEL, true);
+    }
+
+    public static boolean showAllAppsLabel(Context context) {
+         return getPrefs(context).getBoolean(ALLAPPS_SHOW_LABEL, true);
+    }
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);

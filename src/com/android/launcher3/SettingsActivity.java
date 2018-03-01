@@ -159,6 +159,21 @@ public class SettingsActivity extends Activity {
             Utilities.getPrefs(getActivity()).registerOnSharedPreferenceChangeListener(this);
             loadIconPackSummary();
         }
+        
+            SwitchPreference desktopShowLabel = (SwitchPreference) findPreference(Utilities.DESKTOP_SHOW_LABEL);
+            SwitchPreference allAppsShowLabel = (SwitchPreference) findPreference(Utilities.ALLAPPS_SHOW_LABEL);
+            desktopShowLabel.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    restart(getActivity());
+                    return true;
+                }
+            });
+            allAppsShowLabel.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    restart(getActivity());
+                    return true;
+                }
+            });
 
         @Override
         public void onSaveInstanceState(Bundle outState) {

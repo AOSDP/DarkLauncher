@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2019 AOSDP    
+      Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+           http://www.apache.org/licenses/LICENSE-2.0
+      Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+     
+    <!-- Misc -->
     <string name="aosdp_launcher" translatable="false">DarkLauncher</string>
     <string name="default_iconpack_title">Default</string>
     <string name="no_iconpacks_summary">No icon packs installed</string>
     <string name="dialog_pick_iconpack_title">Pick icon pack</string>
     <string name="pref_icon_pack_title">Icon pack</string>
+
+    <!-- Show labels on icon -->
+    <string name="desktop_show_label_title">Homescreen Apps Labels</string>
+    <string name="desktop_show_label_summary">Show labels below the icons on desktop</string>
+    <string name="allapps_show_label_title">AppDrawer Apps Labels</string>
+    <string name="allapps_show_label_summary">Show labels below the icons in app drawer</string>
+
 </resources>
