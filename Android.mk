@@ -78,9 +78,11 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
-LOCAL_PACKAGE_NAME := Launcher3
+LOCAL_PACKAGE_NAME := DarkLauncher
 LOCAL_PRIVILEGED_MODULE := true
-LOCAL_OVERRIDES_PACKAGES := Home Launcher2
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
+
+LOCAL_AAPT_FLAGS += --rename-manifest-package com.aosdp.launcher
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
@@ -107,7 +109,7 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
-LOCAL_PACKAGE_NAME := Launcher3Go
+LOCAL_PACKAGE_NAME := DarkLauncherGo
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
 
@@ -158,7 +160,7 @@ LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26
-LOCAL_PACKAGE_NAME := Launcher3QuickStep
+LOCAL_PACKAGE_NAME := DarkLauncherQuickStep
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 
@@ -197,7 +199,7 @@ LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26
-LOCAL_PACKAGE_NAME := Launcher3QuickStepGo
+LOCAL_PACKAGE_NAME := DarkLauncherQuickStepGo
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
 
