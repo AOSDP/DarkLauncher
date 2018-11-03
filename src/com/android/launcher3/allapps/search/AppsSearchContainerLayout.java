@@ -32,6 +32,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
@@ -85,6 +86,14 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
         mFixedTranslationY = getTranslationY();
         mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
+        
+final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        setOnClickListener(v -> {
+            v.setFocusableInTouchMode(true);
+            v.requestFocus();
+            imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+            v.setFocusableInTouchMode(false);
+        });
 
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon
