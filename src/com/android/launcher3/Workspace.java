@@ -430,6 +430,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mDragInfo = null;
         mOutlineProvider = null;
         mDragSourceInternal = null;
+
+        getPageIndicator().setShouldAutoHide(true);
     }
 
     /**
