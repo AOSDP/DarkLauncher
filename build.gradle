@@ -41,9 +41,9 @@ android {
     flavorDimensions "default"
 
     productFlavors {
-        aosp {
+        aosdp {
             dimension "default"
-            applicationId 'com.android.launcher3'
+            applicationId 'com.aosdp.launcher'
             testApplicationId 'com.android.launcher3.tests'
         }
 
@@ -92,7 +92,7 @@ android {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
 
-        aosp {
+        aosdp {
             java.srcDirs = ['src_flags', "src_ui_overrides"]
         }
 
