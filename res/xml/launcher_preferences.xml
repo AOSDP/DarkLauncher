@@ -16,6 +16,10 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <Preference
+        android:key="icon_pack"
+        android:title="@string/pref_icon_pack_title" />
+
     <com.android.launcher3.views.ButtonPreference
         android:key="pref_icon_badging"
         android:title="@string/icon_badging_title"

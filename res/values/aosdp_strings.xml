@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="aosdp_launcher" translatable="false">DarkLauncher</string>
+    <string name="default_iconpack_title">Default</string>
+    <string name="no_iconpacks_summary">No icon packs installed</string>
+    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
+    <string name="pref_icon_pack_title">Icon pack</string>
 </resources>

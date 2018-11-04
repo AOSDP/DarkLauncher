@@ -122,4 +122,8 @@ public abstract class SQLiteCacheHelper {
             onCreate(db);
         }
     }
+
+    public SQLiteDatabase getDatabase() {
+        return mOpenHelper.getWritableDatabase();
+    }
 }

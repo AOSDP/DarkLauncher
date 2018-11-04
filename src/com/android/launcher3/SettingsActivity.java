@@ -30,6 +30,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -47,6 +51,7 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ListViewHighlighter;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
+import com.aosdp.launcher.icons.IconPackHelper;
 
 import java.util.Objects;
 
@@ -56,9 +61,13 @@ import java.util.Objects;
 public class SettingsActivity extends Activity {
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
+    /**
+     * Hidden field Settings.Secure.NOTIFICATION_BADGING
+     */
     public static final String NOTIFICATION_BADGING = "notification_badging";
-    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
+    /**
+     * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
+     */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     private static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
@@ -85,12 +94,13 @@ public class SettingsActivity extends Activity {
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends PreferenceFragment {
+    public static class LauncherSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private IconBadgingObserver mIconBadgingObserver;
 
         private String mPreferenceKey;
         private boolean mPreferenceHighlighted = false;
+        private Preference mIconPack;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +111,12 @@ public class SettingsActivity extends Activity {
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
+
+            mIconPack = findPreference("icon_pack");
+            mIconPack.setOnPreferenceClickListener((Preference preference) -> {
+                IconPackHelper.pickIconPack(getActivity());
+                return true;
+            });
 
             ContentResolver resolver = getActivity().getContentResolver();
 
@@ -137,6 +153,9 @@ public class SettingsActivity extends Activity {
                 // Initialize the UI once
                 rotationPref.setDefaultValue(getAllowRotationDefaultValue());
             }
+
+            Utilities.getPrefs(getActivity()).registerOnSharedPreferenceChangeListener(this);
+            loadIconPackSummary();
         }
 
         @Override
@@ -195,6 +214,7 @@ public class SettingsActivity extends Activity {
                 mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
             }
+            Utilities.getPrefs(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
             super.onDestroy();
         }
 
@@ -216,6 +236,38 @@ public class SettingsActivity extends Activity {
                 return null;
             }
         }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals("icon_pack"))
+                loadIconPackSummary();
+        }
+
+        private void loadIconPackSummary() {
+            ApplicationInfo info = null;
+            String iconPack = Utilities.getPrefs(getActivity()).getString("icon_pack", "");
+
+            Drawable packageIcon = getActivity().getDrawable(R.drawable.ic_launcher_home);
+            try {
+                PackageManager mPackageManager = getActivity().getPackageManager();
+                try {
+                    info = mPackageManager.getApplicationInfo(iconPack, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (info != null) {
+                    iconPack = mPackageManager.getApplicationLabel(info).toString();
+                    packageIcon = mPackageManager.getApplicationIcon(info);
+                    mIconPack.setSummary(iconPack);
+                    mIconPack.setIcon(packageIcon);
+                } else {
+                    iconPack = getResources().getString(R.string.default_iconpack_title);
+                    mIconPack.setSummary(iconPack);
+                    mIconPack.setIcon(packageIcon);
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 
     /**
@@ -230,7 +282,7 @@ public class SettingsActivity extends Activity {
         private final FragmentManager mFragmentManager;
 
         public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
-                FragmentManager fragmentManager) {
+                                   FragmentManager fragmentManager) {
             super(resolver);
             mBadgingPref = badgingPref;
             mResolver = resolver;
