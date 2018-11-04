@@ -80,9 +80,6 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
-    <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false"></string>
-
     <!-- Name of a drawable factory class. -->
     <string name="drawable_factory_class" translatable="false"></string>
 

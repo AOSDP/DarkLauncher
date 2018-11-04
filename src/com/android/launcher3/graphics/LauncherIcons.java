@@ -30,7 +30,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -42,6 +47,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.support.v7.graphics.Palette;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -56,6 +62,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
+import com.aosdp.launcher.icons.IconPackHelper;
 
 /**
  * Helper methods for generating various launcher icons
@@ -64,6 +71,7 @@ public class LauncherIcons implements AutoCloseable {
 
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
 
+    private static final Rect sOldBounds = new Rect();
     public static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
 
@@ -186,7 +194,7 @@ public class LauncherIcons implements AutoCloseable {
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp) {
+                                             boolean isInstantApp) {
         return createBadgedIconBitmap(icon, user, iconAppTargetSdk, isInstantApp, null);
     }
 
@@ -196,7 +204,7 @@ public class LauncherIcons implements AutoCloseable {
      * The bitmap is also visually normalized with other icons.
      */
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user, int iconAppTargetSdk,
-            boolean isInstantApp, float [] scale) {
+                                             boolean isInstantApp, float[] scale) {
         if (scale == null) {
             scale = new float[1];
         }
@@ -246,7 +254,7 @@ public class LauncherIcons implements AutoCloseable {
     }
 
     private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
-            RectF outIconBounds, float[] outScale) {
+                                                    RectF outIconBounds, float[] outScale) {
         float scale = 1f;
         if ((Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) ||
                 Utilities.ATLEAST_P) {
@@ -333,8 +341,8 @@ public class LauncherIcons implements AutoCloseable {
                 Bitmap.Config.ARGB_8888);
         mCanvas.setBitmap(bitmap);
 
-        final int left = (textureWidth-width) / 2;
-        final int top = (textureHeight-height) / 2;
+        final int left = (textureWidth - width) / 2;
+        final int top = (textureHeight - height) / 2;
 
         mOldBounds.set(icon.getBounds());
         if (Utilities.ATLEAST_OREO && icon instanceof AdaptiveIconDrawable) {
@@ -342,7 +350,7 @@ public class LauncherIcons implements AutoCloseable {
             int size = Math.max(width, height);
             icon.setBounds(offset, offset, size - offset, size - offset);
         } else {
-            icon.setBounds(left, top, left+width, top+height);
+            icon.setBounds(left, top, left + width, top + height);
         }
         mCanvas.save();
         mCanvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
@@ -363,7 +371,7 @@ public class LauncherIcons implements AutoCloseable {
     }
 
     public BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo,
-            boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
+                                         boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
                 .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
@@ -440,6 +448,155 @@ public class LauncherIcons implements AutoCloseable {
         @Override
         public int getIntrinsicWidth() {
             return getBitmap().getWidth();
+        }
+    }
+
+    /**
+     * Returns a bitmap suitable for the all apps view.
+     */
+    public Bitmap createIconBitmap(Drawable icon, Context context,
+                                   IconPackHelper iconPackHelper) {
+        synchronized (mCanvas) {
+            final int iconBitmapSize = LauncherAppState.getInstance(context).getInvariantDeviceProfile().iconBitmapSize;
+            Drawable iconMask = null;
+            Drawable iconBack = null;
+            Drawable iconPaletteBack = null;
+            Drawable iconUpon = null;
+            float scale = 1f;
+            float angle = 0;
+            float translationX = 0;
+            float translationY = 0;
+            int defaultSwatchColor = 0;
+            int backTintColor = 0;
+            IconPackHelper.SwatchType swatchType = IconPackHelper.SwatchType.None;
+            float[] colorFilter = null;
+            if (iconPackHelper != null) {
+                iconMask = iconPackHelper.getIconMask();
+                iconBack = iconPackHelper.getIconBack();
+                iconPaletteBack = iconPackHelper.getIconPaletteBack();
+                iconUpon = iconPackHelper.getIconUpon();
+                scale = iconPackHelper.getIconScale();
+                angle = iconPackHelper.getIconAngle();
+                translationX = iconPackHelper.getTranslationX();
+                translationY = iconPackHelper.getTranslationY();
+                swatchType = iconPackHelper.getSwatchType();
+                colorFilter = iconPackHelper.getColorFilter();
+            }
+            int width = iconBitmapSize;
+            int height = iconBitmapSize;
+            if (icon instanceof PaintDrawable) {
+                PaintDrawable painter = (PaintDrawable) icon;
+                painter.setIntrinsicWidth(width);
+                painter.setIntrinsicHeight(height);
+            } else if (icon instanceof BitmapDrawable) {
+                // Ensure the bitmap has a density.
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+                    bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
+                }
+            }
+            int sourceWidth = icon.getIntrinsicWidth();
+            int sourceHeight = icon.getIntrinsicHeight();
+            if (sourceWidth > 0 && sourceHeight > 0) {
+                // Scale the icon proportionally to the icon dimensions
+                final float ratio = (float) sourceWidth / sourceHeight;
+                if (sourceWidth > sourceHeight) {
+                    height = (int) (width / ratio);
+                } else if (sourceHeight > sourceWidth) {
+                    width = (int) (height * ratio);
+                }
+            }
+            // no intrinsic size --> use default size
+            int textureWidth = iconBitmapSize;
+            int textureHeight = iconBitmapSize;
+            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                    Bitmap.Config.ARGB_8888);
+            final Canvas canvas = mCanvas;
+            canvas.setBitmap(bitmap);
+            final int left = (textureWidth - width) / 2;
+            final int top = (textureHeight - height) / 2;
+            if (swatchType != null && swatchType != IconPackHelper.SwatchType.None) {
+                Palette.Builder builder = new Palette.Builder(bitmap);
+                builder.maximumColorCount(IconPackHelper.NUM_PALETTE_COLORS);
+                Palette palette = builder.generate();
+                switch (swatchType) {
+                    case Vibrant:
+                        backTintColor = palette.getVibrantColor(defaultSwatchColor);
+                        break;
+                    case VibrantLight:
+                        backTintColor = palette.getLightVibrantColor(defaultSwatchColor);
+                        break;
+                    case VibrantDark:
+                        backTintColor = palette.getDarkVibrantColor(defaultSwatchColor);
+                        break;
+                    case Muted:
+                        backTintColor = palette.getMutedColor(defaultSwatchColor);
+                        break;
+                    case MutedLight:
+                        backTintColor = palette.getLightMutedColor(defaultSwatchColor);
+                        break;
+                    case MutedDark:
+                        backTintColor = palette.getDarkMutedColor(defaultSwatchColor);
+                        break;
+                }
+            }
+            sOldBounds.set(icon.getBounds());
+            icon.setBounds(left, top, left + width, top + height);
+            canvas.save();
+            final float halfWidth = width / 2f;
+            final float halfHeight = width / 2f;
+            canvas.rotate(angle, halfWidth, halfHeight);
+            canvas.scale(scale, scale, halfWidth, halfHeight);
+            canvas.translate(translationX, translationY);
+            if (colorFilter != null) {
+                Paint p = null;
+                if (icon instanceof BitmapDrawable) {
+                    p = ((BitmapDrawable) icon).getPaint();
+                } else if (icon instanceof PaintDrawable) {
+                    p = ((PaintDrawable) icon).getPaint();
+                }
+                if (p != null) {
+                    p.setColorFilter(new ColorMatrixColorFilter(colorFilter));
+                }
+            }
+            icon.draw(canvas);
+            canvas.restore();
+            if (iconMask != null) {
+                iconMask.setBounds(icon.getBounds());
+                ((BitmapDrawable) iconMask).getPaint().setXfermode(
+                        new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+                iconMask.draw(canvas);
+            }
+            Drawable back = null;
+            if (swatchType != null && swatchType != IconPackHelper.SwatchType.None) {
+                back = iconPaletteBack;
+                defaultSwatchColor = iconPackHelper.getDefaultSwatchColor();
+            } else if (iconBack != null) {
+                back = iconBack;
+            }
+            if (back != null) {
+                canvas.setBitmap(null);
+                Bitmap finalBitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                        Bitmap.Config.ARGB_8888);
+                canvas.setBitmap(finalBitmap);
+                back.setBounds(icon.getBounds());
+                Paint paint = ((BitmapDrawable) back).getPaint();
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OVER));
+                if (backTintColor != 0) {
+                    paint.setColorFilter(new PorterDuffColorFilter(backTintColor,
+                            PorterDuff.Mode.MULTIPLY));
+                }
+                back.draw(canvas);
+                canvas.drawBitmap(bitmap, null, icon.getBounds(), null);
+                bitmap = finalBitmap;
+            }
+            if (iconUpon != null) {
+                iconUpon.draw(canvas);
+            }
+            icon.setBounds(sOldBounds);
+            canvas.setBitmap(null);
+            return bitmap;
         }
     }
 }
