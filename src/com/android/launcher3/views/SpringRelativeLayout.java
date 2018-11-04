@@ -30,14 +30,13 @@ import android.view.View;
 import android.widget.EdgeEffect;
 import android.widget.RelativeLayout;
 
-import static android.support.animation.SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
 import static android.support.animation.SpringForce.STIFFNESS_LOW;
 import static android.support.animation.SpringForce.STIFFNESS_MEDIUM;
 
 public class SpringRelativeLayout extends RelativeLayout {
 
     private static final float STIFFNESS = (STIFFNESS_MEDIUM + STIFFNESS_LOW) / 2;
-    private static final float DAMPING_RATIO = DAMPING_RATIO_MEDIUM_BOUNCY;
+    private static final float DAMPING_RATIO = 0.4f;
     private static final float VELOCITY_MULTIPLIER = 0.3f;
 
     private static final FloatPropertyCompat<SpringRelativeLayout> DAMPED_SCROLL =
