@@ -62,6 +62,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
+
 import com.aosdp.launcher.icons.IconPackHelper;
 
 /**
@@ -70,8 +71,6 @@ import com.aosdp.launcher.icons.IconPackHelper;
 public class LauncherIcons implements AutoCloseable {
 
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
-
-    private static final Rect sOldBounds = new Rect();
     public static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
 
@@ -457,7 +456,6 @@ public class LauncherIcons implements AutoCloseable {
     public Bitmap createIconBitmap(Drawable icon, Context context,
                                    IconPackHelper iconPackHelper) {
         synchronized (mCanvas) {
-            final int iconBitmapSize = LauncherAppState.getInstance(context).getInvariantDeviceProfile().iconBitmapSize;
             Drawable iconMask = null;
             Drawable iconBack = null;
             Drawable iconPaletteBack = null;
@@ -482,8 +480,8 @@ public class LauncherIcons implements AutoCloseable {
                 swatchType = iconPackHelper.getSwatchType();
                 colorFilter = iconPackHelper.getColorFilter();
             }
-            int width = iconBitmapSize;
-            int height = iconBitmapSize;
+            int width = mIconBitmapSize;
+            int height = mIconBitmapSize;
             if (icon instanceof PaintDrawable) {
                 PaintDrawable painter = (PaintDrawable) icon;
                 painter.setIntrinsicWidth(width);
@@ -508,8 +506,8 @@ public class LauncherIcons implements AutoCloseable {
                 }
             }
             // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
+            int textureWidth = mIconBitmapSize;
+            int textureHeight = mIconBitmapSize;
             Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = mCanvas;
@@ -541,7 +539,7 @@ public class LauncherIcons implements AutoCloseable {
                         break;
                 }
             }
-            sOldBounds.set(icon.getBounds());
+            mOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left + width, top + height);
             canvas.save();
             final float halfWidth = width / 2f;
@@ -594,7 +592,7 @@ public class LauncherIcons implements AutoCloseable {
             if (iconUpon != null) {
                 iconUpon.draw(canvas);
             }
-            icon.setBounds(sOldBounds);
+            icon.setBounds(mOldBounds);
             canvas.setBitmap(null);
             return bitmap;
         }
