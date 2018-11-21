@@ -501,17 +501,16 @@ public class IconPackHelper {
         Map<ComponentName, String> iconPackResources = new HashMap<>();
 
         try {
-            inputStream = res.getAssets().open("appfilter.xml");
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            parser = factory.newPullParser();
-            parser.setInput(inputStream, "UTF-8");
-        } catch (Exception e) {
-            // Catch any exception since we want to fall back to parsing the xml/
-            // resource in all cases
             int resId = res.getIdentifier("appfilter", "xml", packageName);
             if (resId != 0) {
                 parser = res.getXml(resId);
+            } else {
+                inputStream = res.getAssets().open("appfilter.xml");
+                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                parser = factory.newPullParser();
+                parser.setInput(inputStream, "UTF-8");
             }
+        } catch (Exception e) {
         }
 
         if (parser != null) {
