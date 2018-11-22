@@ -26,14 +26,21 @@ public class IconProvider {
         }
         int resourceId = mIconPackHelper.getResourceIdForActivityIcon(info);
         if (resourceId != 0) {
-            return mIconPackHelper.getIconPackResources().getDrawableForDensity(resourceId,
-                    iconDpi, mContext.getTheme());
+            try {
+                return mIconPackHelper.getIconPackResources().getDrawableForDensity(resourceId, iconDpi, mContext.getTheme());
+            } catch (Exception e) {
+                return getIconBitmap(info, iconDpi);
+            }
         } else {
-            LauncherIcons li = LauncherIcons.obtain(mContext);
-            Drawable d = new BitmapDrawable(mContext.getResources(), li.createIconBitmap(info.getIcon(iconDpi), mContext, mIconPackHelper));
-            li.recycle();
-            return d;
+            return getIconBitmap(info, iconDpi);
         }
+    }
+
+    private Drawable getIconBitmap(LauncherActivityInfo info, int iconDpi) {
+        LauncherIcons li = LauncherIcons.obtain(mContext);
+        Drawable d = new BitmapDrawable(mContext.getResources(), li.createIconBitmap(info.getIcon(iconDpi), mContext, mIconPackHelper));
+        li.recycle();
+        return d;
     }
 
     public void loadIconPack() {
