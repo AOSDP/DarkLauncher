@@ -17,6 +17,10 @@ apply plugin: 'com.google.protobuf'
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
     defaultConfig {
         minSdkVersion 21
@@ -30,6 +34,11 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.flags'
         }
     }
 
@@ -57,13 +66,6 @@ android {
             dimension "default"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
-        }
-    }
-
-    // Disable release builds for now
-    android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
         }
     }
 
