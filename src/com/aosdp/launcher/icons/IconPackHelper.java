@@ -77,7 +77,7 @@ public class IconPackHelper {
     private static final ComponentName ICON_SCALE_COMPONENT;
     private static final ComponentName ICON_PALETTIZED_BACK_COMPONENT;
 
-    public final static String[] sSupportedActions = new String[]{
+    private final static String[] sSupportedActions = new String[]{
             "com.gau.go.launcherex.theme",
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",
