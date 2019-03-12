@@ -188,4 +188,10 @@
         <item name="android:colorControlHighlight">#DFE1E5</item>
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
+    <style name="Settings" parent="@android:style/Theme.Material">
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorAccent">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
 </resources>
