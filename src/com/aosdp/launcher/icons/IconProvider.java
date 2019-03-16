@@ -1,4 +1,4 @@
-package com.aosdp.launcher.icons;
+package com.android.launcher3.icons;
 
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;

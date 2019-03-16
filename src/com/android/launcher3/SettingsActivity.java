@@ -56,7 +56,7 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ListViewHighlighter;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
-import com.aosdp.launcher.icons.IconPackHelper;
+import com.android.launcher3.icons.IconPackHelper;
 
 import java.util.Objects;
 

@@ -63,7 +63,7 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Themes;
 
-import com.aosdp.launcher.icons.IconPackHelper;
+import com.android.launcher3.icons.IconPackHelper;
 
 /**
  * Helper methods for generating various launcher icons

@@ -1,4 +1,4 @@
-package com.aosdp.launcher.icons;
+package com.android.launcher3.icons;
 
 import java.io.IOException;
 import java.io.InputStream;

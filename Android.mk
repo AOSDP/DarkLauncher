@@ -83,8 +83,6 @@ LOCAL_PACKAGE_NAME := DarkLauncher
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 
-LOCAL_AAPT_FLAGS += --rename-manifest-package com.aosdp.launcher
-
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*

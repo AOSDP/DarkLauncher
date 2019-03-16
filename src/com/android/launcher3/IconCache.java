@@ -55,7 +55,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
-import com.aosdp.launcher.icons.IconProvider;
+import com.android.launcher3.icons.IconProvider;
 
 import java.util.Collections;
 import java.util.HashMap;
