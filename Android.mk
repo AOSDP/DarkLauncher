@@ -112,7 +112,7 @@ LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
 LOCAL_PACKAGE_NAME := DarkLauncherGo
 LOCAL_PRIVILEGED_MODULE := true
-LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3Go Launcher3QuickStep
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/AndroidManifest.xml \
@@ -163,7 +163,7 @@ LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26
 LOCAL_PACKAGE_NAME := DarkLauncherQuickStep
 LOCAL_PRIVILEGED_MODULE := true
-LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 DarkLauncher
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
 
@@ -202,7 +202,7 @@ LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26
 LOCAL_PACKAGE_NAME := DarkLauncherQuickStepGo
 LOCAL_PRIVILEGED_MODULE := true
-LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3 Launcher3QuickStep Launcher3QuickStepGo
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/go/AndroidManifest.xml \
